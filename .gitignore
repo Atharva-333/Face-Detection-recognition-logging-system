@@ -1,1 +1,6 @@
 known_faces/
+logs/
+__pycache__/
+venv/
+.env
+*.csv
