@@ -1,0 +1,12 @@
+git init
+git add .
+git commit -m "initial Commit"
+//GitHub commands
+
+^^these to start a new git and link it to github
+
+git add .
+git commit -m "What changed"
+git push
+
+^^these after each edit

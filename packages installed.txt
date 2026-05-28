@@ -1,0 +1,3 @@
+pip install ultralytics opencv-python
+pip install opencv-python
+pip install deepface
