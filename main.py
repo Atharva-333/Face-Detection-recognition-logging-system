@@ -18,7 +18,7 @@ with open(csv_file, mode='w', newline='') as file:      #overwrite old file
     ])
 
 # Load YOLO model
-model = YOLO("yolov8n.pt")
+model = YOLO("yolov8n-face.pt")
 
 #if have NVIDIA GPU
 #model = YOLO("yolov8n.pt").to('cuda')
@@ -50,21 +50,37 @@ while True:
 
         for box in boxes:
 
-            cls = int(box.cls[0])        #box.cls[0] class id for a person
-
-            # Class 0 = person
-            if cls == 0:
-
                 x1, y1, x2, y2 = map(int, box.xyxy[0])    #co-ords of person
                 x1, y1, x2, y2 = x1*2, y1*2, x2*2, y2*2
+                face_img = frame[y1:y2, x1:x2]
 
                 try:
-                    face=DeepFace.find(
-                        img_path=frame
+                    result = DeepFace.find(
+                        img_path=face_img,
+                        db_path="known_faces",
+                        enforce_detection=False,
+                        silent=True
                     )
+
+                    # If face matched
+                    if len(result) > 0 and not result[0].empty:
+
+                        person_path = result[0].iloc[0]['identity']
+
+                        # Extract name from file path
+                        name = person_path.split("\\")[-1].split(".")[0]
+
+                        cv2.putText(
+                            frame,
+                            f"{name}",
+                            (50, 50),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            1,
+                            (0, 255, 0),
+                            2
+                        )
                 except Exception as e:
                     print (e)
-
 
                 confidence = float(box.conf[0])    #model's surety of person
                 track_id = None
